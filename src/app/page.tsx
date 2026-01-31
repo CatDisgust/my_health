@@ -1,9 +1,9 @@
 export const dynamic = 'force-dynamic';
 
 import { format } from 'date-fns';
-import { Footprints, Moon, Battery, Scale } from 'lucide-react';
+import { Footprints, Moon, Battery, Scale, Activity } from 'lucide-react';
 import { getDashboardData } from '@/lib/dashboard-data';
-import { StepsBarChart, SleepEnergyAreaChart } from '@/components/dashboard-charts';
+import { ActivityComposedChart, SleepEnergyAreaChart } from '@/components/dashboard-charts';
 
 function kpiCompare(
   todayVal: number | null | undefined,
@@ -84,7 +84,7 @@ export default async function DashboardPage() {
           <h2 className="mb-4 text-sm font-medium text-zinc-400">
             Today&apos;s stats
           </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
             <KpiCard
               title="Steps"
               value={today?.steps}
@@ -125,6 +125,14 @@ export default async function DashboardPage() {
               higherIsBetter={false}
               icon={Scale}
             />
+            <KpiCard
+              title="Exercise"
+              value={today?.exercise_minutes}
+              unit=" mins"
+              yesterdayValue={yesterday?.exercise_minutes}
+              higherIsBetter
+              icon={Activity}
+            />
           </div>
         </section>
 
@@ -133,9 +141,9 @@ export default async function DashboardPage() {
           <div className="space-y-8">
             <div className="rounded-lg border border-zinc-800 bg-zinc-950/50 p-4">
               <h3 className="mb-3 text-sm font-medium text-zinc-300">
-                Steps (last 7 days)
+                Activity (last 7 days)
               </h3>
-              <StepsBarChart data={byDay} />
+              <ActivityComposedChart data={byDay} />
             </div>
             <div className="rounded-lg border border-zinc-800 bg-zinc-950/50 p-4">
               <h3 className="mb-3 text-sm font-medium text-zinc-300">
@@ -165,6 +173,9 @@ export default async function DashboardPage() {
                   <th className="px-4 py-3 font-medium text-zinc-400">
                     Weight
                   </th>
+                  <th className="px-4 py-3 font-medium text-zinc-400">
+                    Exercise
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -193,6 +204,11 @@ export default async function DashboardPage() {
                     <td className="px-4 py-3">
                       {row.weight_kg != null
                         ? `${row.weight_kg} kg`
+                        : '--'}
+                    </td>
+                    <td className="px-4 py-3">
+                      {row.exercise_minutes != null
+                        ? `${row.exercise_minutes} min`
                         : '--'}
                     </td>
                   </tr>

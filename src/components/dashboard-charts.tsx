@@ -11,6 +11,8 @@ import {
   AreaChart,
   Area,
   Legend,
+  ComposedChart,
+  Line,
 } from 'recharts';
 
 export interface ChartDay {
@@ -18,20 +20,26 @@ export interface ChartDay {
   steps: number;
   sleepHours: number;
   energyLevel: number | null;
+  exerciseMinutes: number;
 }
 
-export function StepsBarChart({ data }: { data: ChartDay[] }) {
+export function ActivityComposedChart({ data }: { data: ChartDay[] }) {
   return (
     <div className="h-[240px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+        <ComposedChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
           <XAxis
             dataKey="date"
             tick={{ fill: '#a1a1aa', fontSize: 11 }}
             tickFormatter={(v) => v.slice(5)}
           />
-          <YAxis tick={{ fill: '#a1a1aa', fontSize: 11 }} />
+          <YAxis yAxisId="left" tick={{ fill: '#a1a1aa', fontSize: 11 }} />
+          <YAxis
+            yAxisId="right"
+            orientation="right"
+            tick={{ fill: '#a1a1aa', fontSize: 11 }}
+          />
           <Tooltip
             contentStyle={{
               backgroundColor: '#18181b',
@@ -39,11 +47,33 @@ export function StepsBarChart({ data }: { data: ChartDay[] }) {
               borderRadius: '6px',
             }}
             labelStyle={{ color: '#fff' }}
-            formatter={((value: any) => [value, 'Steps']) as any}
+            formatter={((value: any, name: string) => [
+              value,
+              name === 'steps' ? 'Steps' : 'Exercise (mins)',
+            ]) as any}
             labelFormatter={(label) => `Date: ${label}`}
           />
-          <Bar dataKey="steps" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-        </BarChart>
+          <Legend
+            wrapperStyle={{ fontSize: 12 }}
+            formatter={(value) => (value === 'steps' ? 'Steps' : 'Exercise (mins)')}
+          />
+          <Bar
+            yAxisId="left"
+            dataKey="steps"
+            fill="#3b82f6"
+            radius={[4, 4, 0, 0]}
+            name="steps"
+          />
+          <Line
+            yAxisId="right"
+            type="monotone"
+            dataKey="exerciseMinutes"
+            stroke="#f97316"
+            strokeWidth={2}
+            dot={{ fill: '#f97316' }}
+            name="exerciseMinutes"
+          />
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   );

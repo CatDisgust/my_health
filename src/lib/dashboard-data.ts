@@ -14,6 +14,7 @@ export interface DashboardData {
     steps: number;
     sleepHours: number;
     energyLevel: number | null;
+    exerciseMinutes: number;
   }>;
 }
 
@@ -54,12 +55,12 @@ export async function getDashboardData(): Promise<DashboardData> {
 
   const byDayMap = new Map<
     string,
-    { steps: number; sleepMinutes: number; energyLevel: number | null }
+    { steps: number; sleepMinutes: number; energyLevel: number | null; exerciseMinutes: number }
   >();
   for (let d = RECENT_DAYS - 1; d >= 0; d--) {
     const day = subDays(new Date(), d);
     const key = format(startOfDay(day), 'yyyy-MM-dd');
-    byDayMap.set(key, { steps: 0, sleepMinutes: 0, energyLevel: null });
+    byDayMap.set(key, { steps: 0, sleepMinutes: 0, energyLevel: null, exerciseMinutes: 0 });
   }
   for (const r of recent) {
     const key = toLocalDateKey(r.recorded_at);
@@ -67,17 +68,19 @@ export async function getDashboardData(): Promise<DashboardData> {
     if (!cur) continue;
     cur.steps += r.steps ?? 0;
     cur.sleepMinutes += r.sleep_minutes ?? 0;
+    cur.exerciseMinutes += r.exercise_minutes ?? 0;
     if (cur.energyLevel == null && r.energy_level != null)
       cur.energyLevel = r.energy_level;
   }
 
   const byDay = Array.from(byDayMap.entries())
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([date, { steps, sleepMinutes, energyLevel }]) => ({
+    .map(([date, { steps, sleepMinutes, energyLevel, exerciseMinutes }]) => ({
       date,
       steps,
       sleepHours: Math.round((sleepMinutes / 60) * 10) / 10,
       energyLevel,
+      exerciseMinutes,
     }));
 
   return { recent, today, yesterday, byDay };
