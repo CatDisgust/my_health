@@ -42,15 +42,33 @@ export async function POST(request: Request) {
       );
     }
 
+    // Sanitize integer inputs (iOS Shortcuts may send floats)
+    const steps =
+      body.steps != null ? Math.round(Number(body.steps)) : null;
+    const sleep_minutes =
+      body.sleep_minutes != null
+        ? Math.round(Number(body.sleep_minutes)) : null;
+    const resting_hr =
+      body.heart_rate != null
+        ? Math.round(Number(body.heart_rate)) : null;
+    const energy_level =
+      body.energy != null ? Math.round(Number(body.energy)) : null;
+    const exercise_minutes =
+      body.exercise_time != null
+        ? Math.round(Number(body.exercise_time)) : null;
+    const active_energy_kcal =
+      body.active_energy != null
+        ? Math.round(Number(body.active_energy)) : null;
+
     const row = {
       recorded_at: recordedAt.toISOString(),
-      steps: body.steps ?? null,
-      sleep_minutes: body.sleep_minutes ?? null,
+      steps,
+      sleep_minutes,
       weight_kg: body.weight ?? null,
-      resting_hr: body.heart_rate ?? null,
-      energy_level: body.energy ?? null,
-      exercise_minutes: body.exercise_time ?? null,
-      active_energy_kcal: body.active_energy ?? null,
+      resting_hr,
+      energy_level,
+      exercise_minutes,
+      active_energy_kcal,
       raw_data: body as Record<string, unknown>,
     };
 
