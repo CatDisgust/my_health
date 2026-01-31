@@ -39,7 +39,7 @@ export function StepsBarChart({ data }: { data: ChartDay[] }) {
               borderRadius: '6px',
             }}
             labelStyle={{ color: '#fff' }}
-            formatter={(value: any) => [value, 'Steps']}
+            formatter={(value: any) => [value != null ? Number(value) : '--', 'Steps']}
             labelFormatter={(label) => `Date: ${label}`}
           />
           <Bar dataKey="steps" fill="#3b82f6" radius={[4, 4, 0, 0]} />
@@ -75,7 +75,7 @@ export function SleepEnergyAreaChart({ data }: { data: ChartDay[] }) {
             }}
             labelStyle={{ color: '#fff' }}
             formatter={(value: any, name: string) => [
-              value,
+              value != null ? Number(value) : '--',
               name === 'sleepHours' ? 'Sleep (hrs)' : 'Energy',
             ]}
             labelFormatter={(label) => `Date: ${label}`}
