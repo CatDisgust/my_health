@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from 'next/cache';
 import { supabaseAdmin } from '@/lib/supabase';
 import type { HealthMetric } from '@/lib/types';
 import { format, subDays, startOfDay, parseISO } from 'date-fns';
@@ -21,6 +22,7 @@ function toLocalDateKey(iso: string): string {
 }
 
 export async function getDashboardData(): Promise<DashboardData> {
+  noStore();
   const since = subDays(new Date(), RECENT_DAYS);
   const { data: rows, error } = await supabaseAdmin
     .from('health_metrics')

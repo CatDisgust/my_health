@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { format } from 'date-fns';
 import { Footprints, Moon, Battery, Scale } from 'lucide-react';
 import { getDashboardData } from '@/lib/dashboard-data';
